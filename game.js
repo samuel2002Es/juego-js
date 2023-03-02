@@ -7,11 +7,19 @@ const btnDown = document.querySelector('#down');
 
 let canvasSize;
 let elementsSize;
+let level = 0;
 
 const playerPosition = {
   x: undefined,
   y: undefined,
 };
+
+const gifPosition = {
+  x: undefined,
+  y: undefined,
+}
+
+let enemiesPositions = [];
 
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
@@ -43,7 +51,11 @@ function startGame() {
   game.font = elementsSize + 'px Verdana';
   game.textAlign = 'end';
 
-  const map = maps[0];
+  const map = maps[level];
+  if(!map){
+    gamewin();
+    return;
+  }
   /* el metodo split nos devuelve un arreglo donde cada espacio va a hacer la separacion*/
   /* la funcion trim nos ayuda a limpiar espacios en blanco al inicio y final */
   const mapRow = map.trim().split('\n')
@@ -53,6 +65,9 @@ function startGame() {
   /* recorro el arreglo modificando y limpiando primero los strings y luego separando letra por letra*/
   const mapRowCol = mapRow.map(row => row.trim().split(''))
   /* console.log(mapRowCol); */
+
+  enemiesPositions = [];
+  game.clearRect(0,0,canvasSize,canvasSize);
 
   /* forEach tambien le podemos pedir el numero del indice que se encuentra en este caso es rowI y colI */
   mapRowCol.forEach((row, rowI) => {
@@ -65,11 +80,22 @@ function startGame() {
       const posY = elementsSize * (rowI+1)
 
       /* encontramos la posicion del jugador, para empezar donde esta la puerta */
-      if (col == 'O'){
-        playerPosition.x = posX;
-        playerPosition.y = posY;
-        /* damos los valores de la puerta a la calavera */
-        console.log(playerPosition);
+      /* desimos que solo le vamos a dar este valor una ves cuando sea puerta y ademas player position nunca haya sido utilizada es decir solo si es undefined va a estrar al if si no lo es va dejar los valores que ya se tienen */
+      if (col == 'O') {
+        if (!playerPosition.x && !playerPosition.y) {
+          playerPosition.x = posX;
+          playerPosition.y = posY;
+          /* damos los valores de la puerta a la calavera */
+          console.log(playerPosition);
+        } 
+      }else if(col == 'I'){
+        gifPosition.x = posX;
+        gifPosition.y = posY
+      }else if(col == 'X'){
+        enemiesPositions.push({
+          x: posX,
+          y: posY,
+        })
       };
       game.fillText(emoji,posX,posY)
       /* console.log({row,col}) */
@@ -85,7 +111,35 @@ function startGame() {
 }
 
 function movePlayer() {
+  const giftcolisionX = playerPosition.x.toFixed(3) == gifPosition.x.toFixed(3);
+  const giftcolisionY = playerPosition.y.toFixed(3) == gifPosition.y.toFixed(3);
+  const gifcolision = giftcolisionX && giftcolisionY;
+  
+  if (gifcolision) {
+    levelWin();
+  }
+
+  const enemyCollision = enemiesPositions.find(enemy => {
+    const enemyCollisionX = enemy.x.toFixed(3) == playerPosition.x.toFixed(3);
+    const enemyCollisionY = enemy.y.toFixed(3) == playerPosition.y.toFixed(3);
+    return enemyCollisionX && enemyCollisionY;
+  });
+
+  if (enemyCollision) {
+    console.log('has chocado con un enemigo')
+  }
   game.fillText(emojis['PLAYER'],playerPosition.x,playerPosition.y);
+  console.log(playerPosition.x, playerPosition.y)
+}
+
+function levelWin() {
+  console.log('subiste de nivel');
+  level++;
+  startGame()
+}
+
+function gamewin() {
+  console.log('Terminaste el juego')
 }
 
 window.addEventListener('keydown',moveByKeys);
@@ -108,16 +162,39 @@ function moveByKeys(event) {
   }
 }
 function moveUp(){
-  playerPosition.y -= elementsSize;
-  movePlayer();
+  if ((playerPosition.y - elementsSize) < elementsSize-.1) {
+    console.log('out')
+  }else{
+    playerPosition.y -= elementsSize;
+    startGame();
+  }
   console.log("Me movere hacia arriba");
 }
 function moveLeft(){
+  if ((playerPosition.x - elementsSize) < elementsSize){
+    console.log('out')
+  }else{
+    playerPosition.x -= elementsSize;
+    startGame();
+  }
+
   console.log("Me movere hacia Izquierda");
 }
 function moveRight(){
+  if ((playerPosition.x + elementsSize) > canvasSize){
+    console.log('out')
+  }else{
+    playerPosition.x += elementsSize;
+  startGame();
+  }
   console.log("Me movere hacia derecha");
 }
 function moveDown(){
+  if ((playerPosition.y + elementsSize) > canvasSize){
+    console.log('out')
+  }else{
+    playerPosition.y += elementsSize;
+    startGame();
+  }
   console.log("Me movere hacia abajo");
 }
