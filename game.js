@@ -8,6 +8,11 @@ const btnDown = document.querySelector('#down');
 let canvasSize;
 let elementsSize;
 
+const playerPosition = {
+  x: undefined,
+  y: undefined,
+};
+
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 /* resize manda a llamar a este evento que es cuando se cambia de tamaño, esto con el fin de que cada que cambiemos de tamaño se ajuste al tamaño de nuestros dibujos, cuando esto se ejecuta mandamos yamar a la funcion setCanvasSize */
@@ -38,7 +43,7 @@ function startGame() {
   game.font = elementsSize + 'px Verdana';
   game.textAlign = 'end';
 
-  const map = maps[1];
+  const map = maps[0];
   /* el metodo split nos devuelve un arreglo donde cada espacio va a hacer la separacion*/
   /* la funcion trim nos ayuda a limpiar espacios en blanco al inicio y final */
   const mapRow = map.trim().split('\n')
@@ -57,7 +62,15 @@ function startGame() {
       const emoji = emojis[col];
       /* el indice empieza en 0 */
       const posX = elementsSize * (colI+1)
-      const posY =elementsSize * (rowI+1)
+      const posY = elementsSize * (rowI+1)
+
+      /* encontramos la posicion del jugador, para empezar donde esta la puerta */
+      if (col == 'O'){
+        playerPosition.x = posX;
+        playerPosition.y = posY;
+        /* damos los valores de la puerta a la calavera */
+        console.log(playerPosition);
+      };
       game.fillText(emoji,posX,posY)
       /* console.log({row,col}) */
     });
@@ -67,6 +80,12 @@ function startGame() {
       game.fillText(emojis[mapRowCol[row-1][col-1]], elementsSize*col, ((elementsSize * row)-15));
     }
   } */
+  /* escribimos donde esta la calabera le decimos que pase el emoji del jugador en la posicion de la puerta */
+  movePlayer();
+}
+
+function movePlayer() {
+  game.fillText(emojis['PLAYER'],playerPosition.x,playerPosition.y);
 }
 
 window.addEventListener('keydown',moveByKeys);
@@ -77,7 +96,7 @@ btnRight.addEventListener('click', moveRight);
 btnDown.addEventListener('click', moveDown);
 
 function moveByKeys(event) {
-  console.log(event)
+  /* console.log(event) */
   if (event.key == 'ArrowUp') {
     moveUp();
   }else if (event.key == 'ArrowLeft') {
@@ -89,6 +108,8 @@ function moveByKeys(event) {
   }
 }
 function moveUp(){
+  playerPosition.y -= elementsSize;
+  movePlayer();
   console.log("Me movere hacia arriba");
 }
 function moveLeft(){
