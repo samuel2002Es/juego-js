@@ -4,10 +4,12 @@ const btnUp = document.querySelector('#up');
 const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
+const spanLives = document.querySelector('#lives')
 
 let canvasSize;
 let elementsSize;
 let level = 0;
+let lives = 3;
 
 const playerPosition = {
   x: undefined,
@@ -65,6 +67,9 @@ function startGame() {
   /* recorro el arreglo modificando y limpiando primero los strings y luego separando letra por letra*/
   const mapRowCol = mapRow.map(row => row.trim().split(''))
   /* console.log(mapRowCol); */
+  console.log({map, mapRow, mapRowCol});
+  
+  showLives();
 
   enemiesPositions = [];
   game.clearRect(0,0,canvasSize,canvasSize);
@@ -139,9 +144,25 @@ function levelWin() {
 }
 
 function levelFail(){
+  lives--;
+  console.log(lives);
+  if (lives <= 0) {
+    level = 0;
+    lives = 3;
+  }
   playerPosition.x = undefined;
   playerPosition.y =  undefined;
   startGame();
+}
+/* corazones vidas */
+function showLives(){
+  /* super prototipos */
+  /* creamos un arreglo del tamaño de vidas y le metemos los emojis */
+  heartsArray = Array(lives).fill(emojis['HEART']); // ['','','']
+  console.log(heartsArray);
+  spanLives.innerHTML = "";
+  heartsArray.forEach(element => spanLives.append(element));
+  /* spanLives.innerHTML = emojis['HEART'].repeat(lives); */
 }
 
 function gamewin() {
