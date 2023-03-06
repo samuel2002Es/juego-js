@@ -126,7 +126,7 @@ function movePlayer() {
   });
 
   if (enemyCollision) {
-    console.log('has chocado con un enemigo')
+    levelFail();
   }
   game.fillText(emojis['PLAYER'],playerPosition.x,playerPosition.y);
   console.log(playerPosition.x, playerPosition.y)
@@ -136,6 +136,12 @@ function levelWin() {
   console.log('subiste de nivel');
   level++;
   startGame()
+}
+
+function levelFail(){
+  playerPosition.x = undefined;
+  playerPosition.y =  undefined;
+  startGame();
 }
 
 function gamewin() {
