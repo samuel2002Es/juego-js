@@ -6,6 +6,8 @@ const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const spanLives = document.querySelector('#lives')
 const spanTime = document.querySelector('#time')
+const spanRecord = document.querySelector('#record')
+const pResult = document.querySelector('#result')
 
 let canvasSize;
 let elementsSize;
@@ -67,6 +69,7 @@ function startGame() {
   if (!timeStart) {
     timeStart = Date.now()
     timeInterval = setInterval(showTime,100)
+    showRecord();
   }
   /* el metodo split nos devuelve un arreglo donde cada espacio va a hacer la separacion*/
   /* la funcion trim nos ayuda a limpiar espacios en blanco al inicio y final */
@@ -159,6 +162,7 @@ function levelFail(){
   if (lives <= 0) {
     level = 0;
     lives = 3;
+    timeStart = undefined
   }
   playerPosition.x = undefined;
   playerPosition.y =  undefined;
@@ -178,9 +182,30 @@ function showLives(){
 function showTime(){
   spanTime.innerHTML = Date.now() - timeStart;
 }
+function showRecord(){
+  spanRecord.innerHTML = localStorage.getItem("record_time")
+}
+
 
 function gamewin() {
-  console.log('Terminaste el juego')
+  const recordTime = localStorage.getItem('record_time');
+  const playerTime = Date.now() - timeStart;
+  console.log({recordTime, playerTime})
+
+  console.log('Terminaste el juego')  
+  clearInterval(timeInterval);
+  if (recordTime) {
+    if (recordTime >= playerTime ) {
+      localStorage.setItem('record_time',playerTime)
+      pResult.innerHTML="superaste el record";
+    }else{
+      pResult.innerHTML="lo siento no superaste el record";
+    }
+  }else{
+    localStorage.setItem('record_time',playerTime)
+    pResult.innerHTML="primera vez :)";
+  }
+
 }
 
 window.addEventListener('keydown',moveByKeys);
