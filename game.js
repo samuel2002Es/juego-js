@@ -5,11 +5,16 @@ const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const spanLives = document.querySelector('#lives')
+const spanTime = document.querySelector('#time')
 
 let canvasSize;
 let elementsSize;
 let level = 0;
 let lives = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval;
 
 const playerPosition = {
   x: undefined,
@@ -30,26 +35,27 @@ window.addEventListener('resize', setCanvasSize);
 function setCanvasSize() {
   /* del tamaño de nuestra altura siempre y cuando sea mayor a nuestro ancho le decimos que el canvas */
   if (window.innerHeight > window.innerWidth) {
-    canvasSize = window.innerWidth * 0.8;
+    canvasSize = window.innerWidth * 0.7;
   } else {
-    canvasSize = window.innerHeight * 0.8;
+    canvasSize = window.innerHeight * 0.7;
   }
-  
+  canvasSize = Number(canvasSize.toFixed(0));
+
   canvas.setAttribute('width', canvasSize);
   /* agregamos el tamaño que hemos dispuesto para el canvas */
   canvas.setAttribute('height', canvasSize);
   /* setattribute borra lo que este dentro al cambiar */
   
-  elementsSize = ((canvasSize / 10)-1);
+  elementsSize = canvasSize / 10;
   /* del tamaño del canvas lo divido entre 10 para obtener el tamaño de todo lo que tengo que poner dentro en este caso 10 bombas */
-
+  playerPosition.x = undefined;
+  playerPosition.y = undefined;
   startGame();
   /* llamamos a la funcion de star game, de tal forma que primero establecemos los tamaños y despues empezamos el juego */
 }
 
 function startGame() {
   console.log({ canvasSize, elementsSize });
-
   game.font = elementsSize + 'px Verdana';
   game.textAlign = 'end';
 
@@ -58,21 +64,25 @@ function startGame() {
     gamewin();
     return;
   }
+  if (!timeStart) {
+    timeStart = Date.now()
+    timeInterval = setInterval(showTime,100)
+  }
   /* el metodo split nos devuelve un arreglo donde cada espacio va a hacer la separacion*/
   /* la funcion trim nos ayuda a limpiar espacios en blanco al inicio y final */
-  const mapRow = map.trim().split('\n')
+  const mapRows = map.trim().split('\n');
   /* console.log(mapRow); */
 
   /* ahora tenemos un arreglo y no un string por ello no podemos utilizar trim */
   /* recorro el arreglo modificando y limpiando primero los strings y luego separando letra por letra*/
-  const mapRowCol = mapRow.map(row => row.trim().split(''))
+  const mapRowCol = mapRows.map(row => row.trim().split(''));
   /* console.log(mapRowCol); */
-  console.log({map, mapRow, mapRowCol});
+  console.log({map, mapRows, mapRowCol});
   
   showLives();
 
   enemiesPositions = [];
-  game.clearRect(0,0,canvasSize,canvasSize);
+  game.clearRect(0,0,canvasSize, canvasSize);
 
   /* forEach tambien le podemos pedir el numero del indice que se encuentra en este caso es rowI y colI */
   mapRowCol.forEach((row, rowI) => {
@@ -95,7 +105,7 @@ function startGame() {
         } 
       }else if(col == 'I'){
         gifPosition.x = posX;
-        gifPosition.y = posY
+        gifPosition.y = posY  
       }else if(col == 'X'){
         enemiesPositions.push({
           x: posX,
@@ -158,11 +168,15 @@ function levelFail(){
 function showLives(){
   /* super prototipos */
   /* creamos un arreglo del tamaño de vidas y le metemos los emojis */
-  heartsArray = Array(lives).fill(emojis['HEART']); // ['','','']
-  console.log(heartsArray);
+  const heartsArray = Array(lives).fill(emojis['HEART']); // [1,2,3]
+  
   spanLives.innerHTML = "";
-  heartsArray.forEach(element => spanLives.append(element));
+  heartsArray.forEach(heart => spanLives.append(heart));
   /* spanLives.innerHTML = emojis['HEART'].repeat(lives); */
+}
+
+function showTime(){
+  spanTime.innerHTML = Date.now() - timeStart;
 }
 
 function gamewin() {
@@ -177,25 +191,20 @@ btnRight.addEventListener('click', moveRight);
 btnDown.addEventListener('click', moveDown);
 
 function moveByKeys(event) {
-  /* console.log(event) */
-  if (event.key == 'ArrowUp') {
-    moveUp();
-  }else if (event.key == 'ArrowLeft') {
-    moveLeft();
-  }else if (event.key == 'ArrowRight') {
-    moveRight();
-  }else if (event.key == 'ArrowDown') {
-    moveDown();
-  }
+  if (event.key == 'ArrowUp') moveUp();
+  else if (event.key == 'ArrowLeft') moveLeft();
+  else if (event.key == 'ArrowRight') moveRight();
+  else if (event.key == 'ArrowDown') moveDown();
 }
-function moveUp(){
-  if ((playerPosition.y - elementsSize) < elementsSize-.1) {
-    console.log('out')
-  }else{
+function moveUp() {
+  console.log('Me quiero mover hacia arriba');
+
+  if ((playerPosition.y - elementsSize) < elementsSize) {
+    console.log('OUT');
+  } else {
     playerPosition.y -= elementsSize;
     startGame();
   }
-  console.log("Me movere hacia arriba");
 }
 function moveLeft(){
   if ((playerPosition.x - elementsSize) < elementsSize){
