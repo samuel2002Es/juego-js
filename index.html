@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="game-container">
+    <div class="game-container" id="intro">
         <canvas id="game"></canvas>
         <div class="btns">
             <button id="up">Arriba</button>
@@ -19,9 +19,23 @@
         <div class="messages">
             <p>Vidas: <span id="lives"></span></p>
             <p>Tiempo: <span id="time"></span></p>
-            <p>Record: <span id="record"></span></p>
-            <p id="result"></p>
+            <!-- <p>Record: <span id="record"></span></p> -->
+            <!-- <p id="result"></p> -->
         </div>
+    </div>
+    <div id="after">
+        <section>
+            <article class="product-detail--card">
+                    <p class="product--card-title">Felicidades</p>
+                    <p class="product--card-body"></p>
+                    <p class="product--card-title">Tus resultados son los siguientes: </p>
+                    <p>Tiempo: <span id="time2"></span></p>
+                    <p>Record: <span id="record"></span></p>
+                    <p id="result"></p>
+                    <p class="product--card-title">Deseas volver a intentarlo?</p>
+                    <button id="btn" class="button">Reintentar</button>
+            </article>
+        </section>
     </div>
     <script src="./maps.js"></script>
     <script src="./game.js"></script>

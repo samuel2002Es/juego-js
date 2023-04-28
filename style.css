@@ -57,6 +57,58 @@ body {
   }
   
   @media (max-width: 440px) {
-    button { margin-top: 25px; }
+    button { margin-top: 5px; }
     #up, #down { margin-left: 100%; margin-right: 100%; }
   }
+
+  #after {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 100vh;
+    width: 100vw;
+    background-color:#201e1c;
+    padding: 20px 10px;
+  }
+  .product-detail--card{
+    width: 90%;
+    min-width: 288px;
+    max-width: 400px;
+    /* min-height es para que se acople al contenido en caso de que el contenido sea mas grande que el contenedor  */
+    min-height: 150px;
+    margin: 15px auto;
+    padding: 15px;
+    background-color: #282623;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16);
+}
+.clock{
+    background-image: url('./assets/icons/clock.svg');
+}
+.product--card-title{
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  line-height: 1.8rem;
+  color: white;
+}
+.product--card-body{
+  text-align: justify;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  color: #808080;
+}
+.button{
+    width: 152px;
+    height: 48px;
+    margin-top: 20px;
+    font-family: "DM Sans", sans-serif;
+    border-radius: 4px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    line-height: 1.8rem;
+    color: black;
+}

@@ -6,8 +6,12 @@ const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const spanLives = document.querySelector('#lives')
 const spanTime = document.querySelector('#time')
+const spanTime2 = document.querySelector('#time2')
 const spanRecord = document.querySelector('#record')
 const pResult = document.querySelector('#result')
+let intro = document.getElementById('intro')
+let after = document.getElementById('after')
+let btn = document.getElementById('btn')
 
 let canvasSize;
 let elementsSize;
@@ -181,6 +185,7 @@ function showLives(){
 
 function showTime(){
   spanTime.innerHTML = Date.now() - timeStart;
+  spanTime2.innerHTML = Date.now() - timeStart;
 }
 function showRecord(){
   spanRecord.innerHTML = localStorage.getItem("record_time")
@@ -205,6 +210,9 @@ function gamewin() {
     localStorage.setItem('record_time',playerTime)
     pResult.innerHTML="primera vez :)";
   }
+  intro.style.display = "none";
+  after.style.display = "flex";
+
 
 }
 
@@ -214,6 +222,19 @@ btnUp.addEventListener('click', moveUp);
 btnLeft.addEventListener('click', moveLeft);
 btnRight.addEventListener('click', moveRight);
 btnDown.addEventListener('click', moveDown);
+
+btn.addEventListener('click',reiniciarJuego);
+
+function reiniciarJuego(){
+  intro.style.display = "flex";
+  after.style.display = "none";
+  level = 0;
+  lives = 3;
+  timeStart = undefined
+  playerPosition.x = undefined;
+  playerPosition.y =  undefined;
+  startGame();
+}
 
 function moveByKeys(event) {
   if (event.key == 'ArrowUp') moveUp();
